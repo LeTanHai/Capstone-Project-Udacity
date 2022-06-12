@@ -12,11 +12,6 @@ pipeline {
     }
     stages {
         stage ("Lint Dockerfile") {
-            agent {
-                docker {
-                    image 'hadolint/hadolint:latest-debian'
-                }
-            }
             steps {
                 sh 'cd cloud-config-server && hadolint Dockerfile | tee -a hadolint_lint.txt'
                 sh 'cd cloud-gateway && hadolint Dockerfile | tee -a hadolint_lint.txt'
