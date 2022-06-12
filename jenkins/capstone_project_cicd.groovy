@@ -13,17 +13,12 @@ pipeline {
     stages {
         stage ("Lint Dockerfile") {
             steps {
-                sh 'cd cloud-config-server && hadolint Dockerfile | tee -a hadolint_lint.txt'
-                sh 'cd cloud-gateway && hadolint Dockerfile | tee -a hadolint_lint.txt'
-                sh 'cd department-service && hadolint Dockerfile | tee -a hadolint_lint.txt'
-                sh 'cd hystrix-dashboard && hadolint Dockerfile | tee -a hadolint_lint.txt'
-                sh 'cd service-registry && hadolint Dockerfile | tee -a hadolint_lint.txt'
-                sh 'cd user-service && hadolint Dockerfile | tee -a hadolint_lint.txt'
-            }
-            post {
-                always {
-                    archiveArtifacts 'hadolint_lint.txt'
-                }
+                sh 'cd cloud-config-server && hadolint Dockerfile'
+                sh 'cd cloud-gateway && hadolint Dockerfile'
+                sh 'cd department-service && hadolint Dockerfile'
+                sh 'cd hystrix-dashboard && hadolint Dockerfile'
+                sh 'cd service-registry && hadolint Dockerfile'
+                sh 'cd user-service && hadolint Dockerfile'
             }
         }
         stage('BUILD_SPRING_BOOT_SERVICES') {
