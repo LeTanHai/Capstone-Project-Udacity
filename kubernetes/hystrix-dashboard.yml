@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hystrix-dashboard-app
+  namespace: capstone-namespace
+  labels:
+    app: hystrix-dashboard-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hystrix-dashboard-app
+  template:
+    metadata:
+      labels:
+        app: hystrix-dashboard-app
+    spec:
+      containers:
+        - name: hystrix-dashboard-app
+          image: 248155485793.dkr.ecr.us-east-1.amazonaws.com/hystrix-dashboard-repo:staging_1.0_latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 9295
+      imagePullSecrets:
+        - name: ecr-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hystrix-dashboard-svc
+  namespace: capstone-namespace
+spec:
+  type: NodePort
+  ports:
+    - targetPort: 9295
+      port: 80
+  selector:
+    app: hystrix-dashboard-app

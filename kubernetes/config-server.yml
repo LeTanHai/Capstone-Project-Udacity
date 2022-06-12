@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloud-config-server
+  namespace: capstone-namespace
+  labels:
+    app: cloud-config-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloud-config-server
+  template:
+    metadata:
+      labels:
+        app: cloud-config-server
+    spec:
+      containers:
+        - name: cloud-config-server
+          image: 248155485793.dkr.ecr.us-east-1.amazonaws.com/cloud-config-server-repo:staging_1.0_latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 9296
+      imagePullSecrets:
+        - name: ecr-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cloud-config-server-svc
+  namespace: capstone-namespace
+spec:
+  ports:
+    - targetPort: 9296
+      port: 80
+  selector:
+    app: cloud-config-server
