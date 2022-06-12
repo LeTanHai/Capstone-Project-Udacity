@@ -11,6 +11,26 @@ pipeline {
             pipelineSubmitContent: '{"CheckboxParameter": [{"key": "Cloud Config Server","value": "cloud-config-server"},{"key": "Cloud Gateway","value": "cloud-gateway"},{"key": "Department Service","value": "department-service"},{"key": "Hystrix Dashboard","value": "hystrix-dashboard"},{"key": "Service Registry","value": "service-registry"},{"key": "User Service","value": "user-service"}]}', description: '')
     }
     stages {
+        stage ("Lint Dockerfile") {
+            agent {
+                docker {
+                    image 'hadolint/hadolint:latest-debian'
+                }
+            }
+            steps {
+                sh 'cd cloud-config-server && hadolint Dockerfile | tee -a hadolint_lint.txt'
+                sh 'cd cloud-gateway && hadolint Dockerfile | tee -a hadolint_lint.txt'
+                sh 'cd department-service && hadolint Dockerfile | tee -a hadolint_lint.txt'
+                sh 'cd hystrix-dashboard && hadolint Dockerfile | tee -a hadolint_lint.txt'
+                sh 'cd service-registry && hadolint Dockerfile | tee -a hadolint_lint.txt'
+                sh 'cd user-service && hadolint Dockerfile | tee -a hadolint_lint.txt'
+            }
+            post {
+                always {
+                    archiveArtifacts 'hadolint_lint.txt'
+                }
+            }
+        }
         stage('BUILD_SPRING_BOOT_SERVICES') {
             steps {
                 build(job: 'BUILD_SPRING_BOOT_SERVICES', parameters: [
